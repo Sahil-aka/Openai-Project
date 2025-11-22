@@ -28,11 +28,24 @@ import io
 # Initialize FastAPI app
 app = FastAPI(title="Live Multimodal Translation API", version="1.0.0")
 
-# Configure CORS - allowing all origins temporarily for deployment
+# Configure CORS - using custom origin validation to support credentials
+from starlette.middleware.cors import CORSMiddleware
+from starlette.requests import Request
+
+# Custom CORS middleware that allows all Vercel deployments and localhost
+def is_allowed_origin(origin: str) -> bool:
+    allowed_patterns = [
+        "http://localhost",
+        "https://openai-project",  # Matches all openai-project Vercel URLs
+        "https://vercel.app",
+    ]
+    return any(pattern in origin for pattern in allowed_patterns) if origin else False
+
+# Add CORS with dynamic origin checking
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,  # Must be False when using allow_origins=["*"]
+    allow_origin_regex=r"https://.*\.vercel\.app|http://localhost:\d+|https://openai-project.*\.vercel\.app",
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
