@@ -25,6 +25,32 @@ import os
 import PIL.Image
 import io
 
+# Initialize FastAPI app
+app = FastAPI(title="Live Multimodal Translation API", version="1.0.0")
+
+# Configure CORS for production and development
+# Update the allowed origins after deployment
+allowed_origins = [
+    "http://localhost:5173",  # Local Vite dev server
+    "http://localhost:3000",  # Alternative local port
+    "https://*.vercel.app",   # Vercel deployments
+    "https://*.onrender.com", # Render deployments
+    "https://*.railway.app",  # Railway deployments
+]
+
+# Get additional origins from environment variable
+env_origins = os.getenv("ALLOWED_ORIGINS", "")
+if env_origins:
+    allowed_origins.extend([origin.strip() for origin in env_origins.split(",")])
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, replace with specific origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Create tables
 models.Base.metadata.create_all(bind=engine)
 
