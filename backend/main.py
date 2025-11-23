@@ -30,15 +30,11 @@ async def global_exception_handler(request: Request, exc: Exception):
         },
     )
 
-# Configure CORS - Allow Vercel and localhost
+# Configure CORS - Allow all origins (no credentials)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://openai-hack-three.vercel.app",
-        "http://localhost:5173",
-        "http://localhost:3000"
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["*"],
