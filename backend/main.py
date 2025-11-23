@@ -26,7 +26,8 @@ import PIL.Image
 import io
 
 # Initialize FastAPI app
-app = FastAPI(title="Live Multimodal Translation API", version="1.0.0")
+# Vercel deployment: root_path="/api"
+app = FastAPI(title="Live Multimodal Translation API", version="1.0.0", root_path="/api")
 
 # Configure CORS - Allow all Vercel deployments and localhost
 app.add_middleware(
